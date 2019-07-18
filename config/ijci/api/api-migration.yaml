@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: api-migrate
+  labels:
+    app: api-migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: api-migrate
+          image: ijbuild/ijci-migrate:latest@sha256:5d12d94d259b06a58c4fa6218407b5191f569220a3a901a215d4d8ee6089dad5
+          envFrom:
+          - configMapRef:
+              name: api-config
+      restartPolicy: Never
