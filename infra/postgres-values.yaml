@@ -1,0 +1,10 @@
+global:
+  postgresql:
+    postgresqlUsername: ijci
+    postgresqlPassword: hunter2
+    postgresqlDatabase: ijci
+image:
+  tag: 11.4.0-debian-9-r27
+persistence:
+  storageClass: do-block-storage
+  size: 5Gi

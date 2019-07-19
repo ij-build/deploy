@@ -7,7 +7,7 @@ metadata:
 data:
   LOG_LEVEL: debug
   LOG_SQL_QUERIES: 'true'
-  DATABASE_URL: postgres://admin:foobar@postgres/ijci?sslmode=disable # TODO - interpolate vars
+  DATABASE_URL: postgres://ijci:hunter2@postgres-postgresql/ijci?sslmode=disable
   AMQP_EXCHANGE: ijci
   AMQP_ROUTING_KEY: key
-  AMQP_URI: amqp://admin:foobar@rabbitmq:5672/ijci # TODO - interpolate vars
+  AMQP_URI: amqp://ijci:S3FvWruJpe@rabbitmq:5672

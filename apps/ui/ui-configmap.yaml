@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ui-config
+  labels:
+    app: ui
+data:
+  nginx.conf: |
+    worker_processes auto;
+    user www-data;
+    pid /run/nginx.pid;
+
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      ## Virtual Hosts
+      include /etc/nginx/vhost.conf;
+
+      ## Logging
+      access_log /var/log/nginx/access.log;
+      error_log /var/log/nginx/error.log;
+
+      ## Mime Types
+      include /etc/nginx/mime.types;
+      types_hash_max_size 2048;
+      default_type application/octet-stream;
+
+      ## Compression
+      gzip on;
+      gzip_disable "msie6";
+      gzip_vary on;
+      gzip_proxied any;
+      gzip_comp_level 6;
+      gzip_buffers 16 8k;
+      gzip_http_version 1.1;
+      gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+
+      ## Performance Settings
+      sendfile on;
+      tcp_nopush on;
+      tcp_nodelay on;
+
+      ## Connection Settings
+      keepalive_timeout 65;
+
+      ## SSL Settings
+      ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+      ssl_prefer_server_ciphers on;
+    }
+
+  vhost.conf: |
+    proxy_cache_path /tmp/ijci-cache/ levels=1:2 keys_zone=ijci:16m max_size=10g inactive=60m use_temp_path=off;
+
+    server {
+      ## Convert all Spaces errors to an Angular index request
+      error_page 403 404 =200 /index.html;
+
+      location / {
+        rewrite ^([^.]*[^/])$ $1/;
+        rewrite ^(.*)/$ $1/index.html;
+
+        # TODO - collapse this
+        proxy_pass https://ijci.sfo2.digitaloceanspaces.com/ui/dist/ijci-ui/;
+        proxy_intercept_errors on;
+
+        proxy_cache            ijci;
+        proxy_cache_valid      200 60m;
+        proxy_cache_use_stale  error timeout invalid_header updating http_500 http_502 http_503 http_504;
+        proxy_cache_revalidate on;
+        proxy_cache_lock       on;
+        proxy_ignore_headers   Set-Cookie;
+        add_header             X-Cache-Status $upstream_cache_status;
+      }
+    }

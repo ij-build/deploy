@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: rabbitmq
+  name: agent
   labels:
-    app: rabbitmq
+    app: agent
 spec:
   type: ClusterIP
   ports:
-    - name: rabbitmq
-      port: 5672
+    - name: agent
+      port: 5000
   selector:
-    app: rabbitmq
+    app: agent

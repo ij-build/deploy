@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: agent-config
+  labels:
+    app: agent
+data:
+  LOG_LEVEL: debug
+  PUBLIC_HOST: agent # TODO
+  API_ADDR: https://api.ij-build.dev
+  AMQP_CONSUMER_TAG: ctag
+  AMQP_EXCHANGE: ijci
+  AMQP_ROUTING_KEY: key
+  AMQP_QUEUE_NAME: build-requests
+  AMQP_URI: amqp://ijci:S3FvWruJpe@rabbitmq:5672
