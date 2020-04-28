@@ -5,6 +5,7 @@ metadata:
   labels:
     app: agent
 data:
+  DOCKER_HOST: tcp://localhost:2375
   LOG_LEVEL: debug
   PUBLIC_HOST: agent # TODO
   API_ADDR: https://api.ij-build.dev

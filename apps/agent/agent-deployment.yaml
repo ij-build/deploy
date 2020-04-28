@@ -24,10 +24,38 @@ spec:
           envFrom:
             - configMapRef:
                 name: agent-config
+        - name: dind
+          image: docker:18-dind@sha256:da86d052a9c32ceb60b3f73a28a3acec053f4265e5e0f09924df05bd585fa88e
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+          ports:
+            - containerPort: 2375
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - docker
+                - info
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - docker
+                - info
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          securityContext:
+            privileged: true
           volumeMounts:
-            - name: docker-sock
-              mountPath: /var/run/docker.sock
+            - mountPath: /var/lib/docker
+              name: dind-storage
+              subPathExpr: $(POD_NAME)
       volumes:
-        - name: docker-sock
+        - name: dind-storage
           hostPath:
-            path: /var/run/docker.sock
+            path: /tmp/dind
